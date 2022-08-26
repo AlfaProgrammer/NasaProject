@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const launchSchema = new mongoose.Schema({
+const launchesSchema = new mongoose.Schema({
     flightNumber:{ // oltre il type possiamo inserire tutte le validazioni necessarie
         type: Number,
         required: true,
@@ -13,8 +13,7 @@ const launchSchema = new mongoose.Schema({
     launchDate: {type: Date, required: true},
     mission: {type: String, required: true},
     rocket: {type: String, required: true},
-
-    // pensandola in termini SQL target sarebbe su una tabella diversa
+  // pensandola in termini SQL target sarebbe su una tabella diversa
     // quindi avremmo bisogno di una foreign key per avvedervi. 
     // che si puo utilizzare ma non è il massimo
     // target: {
@@ -41,4 +40,9 @@ const launchSchema = new mongoose.Schema({
     },
     customers:[ String ],// un array di stringhe
 
+    
 });
+//Connects launchesSchema with the "launches" collection
+module.exports = mongoose.model('Launch'/*lo fa diventare plurale low case*/, launchesSchema);
+// questo statement si chiama COMPILING THE MODEL
+  

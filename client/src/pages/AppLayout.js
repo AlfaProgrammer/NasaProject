@@ -59,7 +59,7 @@ const AppLayout = props => {
   } = useLaunches(onSuccessSound, onAbortSound, onFailureSound);
 
   const planets = usePlanets(); // questo è un hook
-  console.log(planets.planets);
+  // console.log(planets.planets);
   
   // è il modo di react di rispondere agli eventi e gestire il risultato  
   return <div className={classes.content}>
