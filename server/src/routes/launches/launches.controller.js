@@ -42,28 +42,50 @@ async function httpAddNewLaunch(req, res){
     //dobbimao rispontere al client con dei dati anche se è una POST request
     return res.status(201).json(launch);
 }
+/* ///////////////////// PRIMA DI MONGODB */
+// function httpAbortLaunch(req, res){
+//     // recuperiamo l'id dal URL
 
-function httpAbortLaunch(req, res){
-    // recuperiamo l'id dal URL
+//     //ATTENZIONE CHE req.params.id è UNA STRINGA e quando cercherai di usarla ti dara errore
+//     const launchId = +req.params.id; 
+//     // modi per trasformarlo in numero 
+//     // const launchId = +req.params.id; con il segno più 
+//     // const launchId = Number(req.params.id);
 
-    //ATTENZIONE CHE req.params.id è UNA STRINGA e quando cercherai di usarla ti dara errore
-    const launchId = +req.params.id; 
-    // modi per trasformarlo in numero 
-    // const launchId = +req.params.id; con il segno più 
-    // const launchId = Number(req.params.id);
+//     // anche qui dobbiamo fare dei controlli, che ci vengono facili perché abbiamo creato la funzione 
+//     // dentro il model che verifica l'esistenza di un lancio
+//     if(!existsLaunghWithId(launchId)){
+//         return res.status(404).json({
+//             error: "Launch not found"
+//         });
+//     }
+//     // altrimenti faccio l'abort
+//     const aborted = abortLaunchById(launchId);
+//     return res.status(200).json(aborted);
 
-    // anche qui dobbiamo fare dei controlli, che ci vengono facili perché abbiamo creato la funzione 
-    // dentro il model che verifica l'esistenza di un lancio
-    if(!existsLaunghWithId(launchId)){
+/* ///////////////////// DOPO DI MONGODB */
+// }
+
+async function httpAbortLaunch(req, res){
+    const launchId = Number(req.params.id);
+
+    const existsLaunch = await existsLaunghWithId(launchId);
+
+    if(!existsLaunch){
         return res.status(404).json({
             error: "Launch not found"
         });
     }
-    // altrimenti faccio l'abort
+
     const aborted = abortLaunchById(launchId);
-    return res.status(200).json(aborted);
-
-
+    if(!aborted){
+        return res.status(400).json({
+            error: "launch not aborted"
+        });
+    }
+    return res.status(200).json({
+        ok: true
+    });
 }
 
 module.exports = {

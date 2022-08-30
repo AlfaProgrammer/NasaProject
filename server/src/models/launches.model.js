@@ -3,7 +3,7 @@ const planets = require("./planets.mongo");
 
 const DEFAULT_FLIGHT_NUMBER = 100;
 
-const launches = new Map();
+// const launches = new Map();
 //E come una mappatura di tutti i lanci (una dictionary)
 // la cosa bella è che tiene conto dell'ordine in cui vengono inseriti i dati
 
@@ -23,8 +23,16 @@ const launch = {
 saveLaunch(launch);
 
 // creo funzione per verificare l'esistenza di un lancio all'interno della collection launches
-function existsLaunghWithId(launchId){
-    return launches.has(launchId);
+// function existsLaunghWithId(launchId){
+//     return launches.has(launchId);
+// }
+
+//replico la funzionalita della funzione sopra però facendo la verifica sul DB
+async function existsLaunghWithId(launchId){
+    return await launchesDatabase.findOne({
+        //noi consideriamo l'id come il flightNumber
+        flightNumber: launchId
+    });
 }
 
 // ora potremmo recuperare il lancio in base al suo numero di volo
@@ -55,7 +63,7 @@ async function saveLaunch(launch){
     const planet = await planets.findOne({ // per non restituire una lista ma un singolo oggetto
         keplerName: launch.target
     });
-
+    //vogliamo salvare un nuovo lancio solo se esiste il pianeta tra quelli abitabili
     if (!planet){
         // non abbiamo la possibilita di dare suna risposta al client da qui
         // non c'è accesso a req o res (non siamo nel controller). Lanciamo quindi un errore
@@ -83,13 +91,23 @@ async function scheduleNewLaunch(launch){
     await saveLaunch(newLaunch);
 }
 
-function abortLaunchById(launchId){
+async function abortLaunchById(launchId){
     // invece di rimuovere un dato lo segnamo come abortet
-    const aborted = launches.get(launchId);
-    aborted.upcoming = false;
-    aborted.success = false;
+    // const aborted = launches.get(launchId);
+    // aborted.upcoming = false;
+    // aborted.success = false;
+    // return aborted;
 
-    return aborted;
+    // DOPO MONGODB//////
+    const aborted = await launchesDatabase.updateOne({
+        flightNumber: launchId
+    }, {
+        upcoming: false,
+        success: false
+    })
+    // non usiamo upsert peche facciamo già un check prima se il record esiste
+    // non c'è bisogno di quella funzionalità 
+    return aborted.ok === 1 && aborted.nModified === 1;
 }
 
 module.exports={
