@@ -1,16 +1,16 @@
-const {getAllLaunches, addNewLaunche, existsLaunghWithId, abortLaunchById} = require("../../models/launches.model");
+const {getAllLaunches, scheduleNewLaunch, existsLaunghWithId, abortLaunchById} = require("../../models/launches.model");
 
-function httpGetAllLaunches(req, res){
+async function httpGetAllLaunches(req, res){
     //sfortunatamente la nostra MAP dei lanci non è compatibile con JSON, non possiamo trasformarla direttamente
     // quindi non possiamo fare semplicemente questa cosa 
     // return resizeBy.status(200).json(); 
     // siccome pero noi vogliamo solo i valori delle key dentro la collection MAP
     // dobbiamo accedere ai valori del Map launches "launches.values() " che ci restituisce un
     //oggetto iterabile che quindi possiamo trasformare in array compatibile con JSON
-    return res.status(200).json(getAllLaunches());
+    return res.status(200).json(await getAllLaunches());
 }
 
-function httpAddNewLaunch(req, res){
+async function httpAddNewLaunch(req, res){
 //req.body viene popolato dal middleware inserito nell'app express app.use(express.json());
     const launch = req.body;
     // per trasformare la data da stringa come arriva dal JSON in una data vera facciamo così 
@@ -38,7 +38,7 @@ function httpAddNewLaunch(req, res){
         });
     }
     
-    addNewLaunche(launch);
+    await scheduleNewLaunch(launch);
     //dobbimao rispontere al client con dei dati anche se è una POST request
     return res.status(201).json(launch);
 }

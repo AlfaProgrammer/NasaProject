@@ -1,9 +1,12 @@
+const launchesDatabase = require("./launches.mongo");
+const planets = require("./planets.mongo");
+
+const DEFAULT_FLIGHT_NUMBER = 100;
+
 const launches = new Map();
 //E come una mappatura di tutti i lanci (una dictionary)
 // la cosa bella è che tiene conto dell'ordine in cui vengono inseriti i dati
 
-
-let latestFlightNumber = 100
 
 // definiamo prima i dati necessari di un lancio di cui tenere traccia
 const launch = {
@@ -17,8 +20,7 @@ const launch = {
     success: true
 };
 
-//settiamo la key che deve tracciare il lancio
-launches.set(launch.flightNumber, launch);
+saveLaunch(launch);
 
 // creo funzione per verificare l'esistenza di un lancio all'interno della collection launches
 function existsLaunghWithId(launchId){
@@ -27,22 +29,58 @@ function existsLaunghWithId(launchId){
 
 // ora potremmo recuperare il lancio in base al suo numero di volo
 // launches.get(100) === launch ma noi abbiamo bisogno di esportare tutta la collection dei lanci
-function getAllLaunches(){
-    return Array.from(launches.values());
+async function getAllLaunches(){
+    return await launchesDatabase.find({},{
+        "_id": 0,
+        "__v": 0,
+    });
 }
 
-//adding a launch to the MAP
-function addNewLaunche(launch){
-    latestFlightNumber++;
-    launches.set(
-        latestFlightNumber, 
-        // assegnamo i dati di default di un lancio che non devono essere chiesti quindi al client
-        Object.assign(launch, {
-            customers: ["Nasa", "SpaceX"],
-            upcoming: true,
-            success: true,
-            flightNumber: latestFlightNumber,
-    }));
+//prima faccio un sort decrescente poi ne estraggo un documento
+async function getLatestFlightNumber(){
+    const latestLaunch = await launchesDatabase
+    .findOne()
+    .sort('-flightNumber')//sort mi restituisce un ordine crescente. Con il meno sarà decrescente
+
+    if(!latestLaunch){
+        return DEFAULT_FLIGHT_NUMBER;
+    }
+
+    return latestLaunch.flightNumber;
+}
+
+//upsert operation 
+async function saveLaunch(launch){
+
+    const planet = await planets.findOne({ // per non restituire una lista ma un singolo oggetto
+        keplerName: launch.target
+    });
+
+    if (!planet){
+        // non abbiamo la possibilita di dare suna risposta al client da qui
+        // non c'è accesso a req o res (non siamo nel controller). Lanciamo quindi un errore
+        throw new Error("No matching planet found");
+    }
+
+    await launchesDatabase.findOneAndUpdate({
+        flightNumber: launch.flightNumber,
+    }, launch, {
+        upsert: true,
+    });
+}
+
+// creo funzione che aggiunge un lancio al DB
+async function scheduleNewLaunch(launch){
+    const newFlightNumber = await getLatestFlightNumber() + 1 ;
+
+    const newLaunch = Object.assign(launch, {
+        success: true,
+        upcoming: true,
+        customers: ["Nasa", "SpaceX"],
+        flightNumber: newFlightNumber
+    })
+
+    await saveLaunch(newLaunch);
 }
 
 function abortLaunchById(launchId){
@@ -57,6 +95,6 @@ function abortLaunchById(launchId){
 module.exports={
     existsLaunghWithId,
     getAllLaunches,
-    addNewLaunche,
+    scheduleNewLaunch,
     abortLaunchById
 }

@@ -37,7 +37,10 @@ function loadPlanetsData(){
 // funzione asincrona perche devo recupera tutti i dati prima di dare un risultato
 // devo anche ricordare di fare asincrona anche la funzione del controller che utilizza questa funzione 
 async function getAllPlanets(){
-    return await planets.find({})
+    return await planets.find({}, {
+        "_id": 0,
+        "__v": 0,
+    })
     //gio che passi al method viene applicato come filtro
     //filtro vuoto = tutti i record
 }
