@@ -2,6 +2,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "csv-parse": "^5.3.0",
+    "dotenv": "^16.0.2",
     "express": "^4.18.1",
     "mongoose": "^6.5.3",
     "pm2": "^5.2.0"
@@ -21,7 +22,7 @@
     "watch": "nodemon src/server.js",
     "cluster": "pm2 start src/server.js -i max"
   },
-  "jest":{
+  "jest": {
     "testEnvironment": "node"
   },
   "keywords": [],

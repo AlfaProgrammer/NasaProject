@@ -2,7 +2,8 @@
 // portiamo qui tutto il codice che usa mongoose dentro server.js 
 const mongoose = require('mongoose');
 
-const MONGO_URL = "mongodb+srv://nasa-api:QgjyByJPMBTw9moa@nasacluster.qg3zpwv.mongodb.net/nasa?retryWrites=true&w=majority";
+require("dotenv").config(); // importo url da env
+const MONGO_URL = process.env.MONGO_URL;
 
 mongoose.connection.once("open", () => {
     // mongoose.connection è un event emitter che monitora varie azioni (come open)
