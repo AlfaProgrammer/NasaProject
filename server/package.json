@@ -15,11 +15,14 @@
   "version": "1.0.0",
   "main": "src/server.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "test-watch": "jest --watchAll",
     "start": "node src/server.js",
     "watch": "nodemon src/server.js",
     "cluster": "pm2 start src/server.js -i max"
+  },
+  "jest":{
+    "testEnvironment": "node"
   },
   "keywords": [],
   "author": "",
