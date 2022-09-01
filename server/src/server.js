@@ -7,7 +7,8 @@ const http = require("http");
 const app = require("./app"); // passo l'app gia costruita dentro un altro file.
 // non gli sto passando l'istanza vuota risultato di express()
 const { loadPlanetsData } = require("./models/planets.model");
-const {mongoConnect} = require("./services/mongo");
+const { mongoConnect } = require("./services/mongo");
+const { loadLaunchData } = require("./models/launches.model");
 
 const PORT = process.env.PORT || 8000;
 
@@ -23,6 +24,9 @@ async function startServer(){
 
     await loadPlanetsData(); // prima aspetterà che questa Promise venga risolta prima di partire con 
     //il server.listen
+
+    //loading SpaceX data
+    await loadLaunchData();
 
     server.listen(PORT, ()=> {
         console.log(`Accedi al server http://localhost:${PORT}`)    

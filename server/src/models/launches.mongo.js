@@ -26,7 +26,7 @@ const launchesSchema = new mongoose.Schema({
     // QUINDI FAREMO il NoSQL Approach ovviamente
     target: {
         type: String, // è semplicemente una stringa in MongoDB
-        required: true,
+        // required: true, tolto quando iniziato a utilizzare i lanci SPACEX
     },
 
     upcoming: {

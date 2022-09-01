@@ -1,4 +1,4 @@
-const {getAllLaunches, scheduleNewLaunch, existsLaunghWithId, abortLaunchById} = require("../../models/launches.model");
+const {getAllLaunches, scheduleNewLaunch, existsLaunchWithId, abortLaunchById} = require("../../models/launches.model");
 
 async function httpGetAllLaunches(req, res){
     //sfortunatamente la nostra MAP dei lanci non è compatibile con JSON, non possiamo trasformarla direttamente
@@ -54,7 +54,7 @@ async function httpAddNewLaunch(req, res){
 
 //     // anche qui dobbiamo fare dei controlli, che ci vengono facili perché abbiamo creato la funzione 
 //     // dentro il model che verifica l'esistenza di un lancio
-//     if(!existsLaunghWithId(launchId)){
+//     if(!existsLaunchWithId(launchId)){
 //         return res.status(404).json({
 //             error: "Launch not found"
 //         });
@@ -69,7 +69,7 @@ async function httpAddNewLaunch(req, res){
 async function httpAbortLaunch(req, res){
     const launchId = Number(req.params.id);
 
-    const existsLaunch = await existsLaunghWithId(launchId);
+    const existsLaunch = await existsLaunchWithId(launchId);
 
     if(!existsLaunch){
         return res.status(404).json({
