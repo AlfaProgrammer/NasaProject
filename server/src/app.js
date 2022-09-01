@@ -3,9 +3,7 @@ const cors = require('cors');
 const path = require("path")
 const morgan = require("morgan");
 
-//Router
-const planetsRouter = require("./routes/planets/planets.router");
-const launchesRouter = require('./routes/launches/launches.router');
+const api = require("./routes/api")
 
 const app = express();
 // utilizziamo subito questo middlewere per garantire un Parsing
@@ -21,10 +19,9 @@ app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.static(path.join(__dirname,'..','public')));
 
-app.use("/planets",planetsRouter);
-// per non ripetere ad ogni funzione del controller che è riferita a questo endpoint
-// posso inserire nel middlewer del router l'endpoint stesso
-app.use('/launches',launchesRouter);
+app.use("/v1", api); // api = file dell'api //v1 = parametro dell url 
+//posso avere quante versioni voglio
+// app.use("/v2", v2Router); // api = file dell'api //v1 = parametro dell url 
 
 app.get("/*", (req, res) => {
     res.sendFile(path.join(__dirname, "..", "public", "index.html"))

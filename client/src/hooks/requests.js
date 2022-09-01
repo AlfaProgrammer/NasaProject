@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8000";
+const API_URL = "http://localhost:8000/v1";
 
 async function httpGetPlanets() {
   // dobbiamo ricordarci che sono su2 PORT differenti
