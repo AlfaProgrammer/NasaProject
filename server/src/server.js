@@ -4,11 +4,16 @@
 
 // richiediamo prima i package necessari 
 const http = require("http");
+
+require("dotenv").config(); // popola l'oggetto process.env con i valori presenti nel file .env
+// se lo mettiamo sopra tutto sara disponibile anche per tutti i moduli che importiamo sotto
+
 const app = require("./app"); // passo l'app gia costruita dentro un altro file.
 // non gli sto passando l'istanza vuota risultato di express()
 const { loadPlanetsData } = require("./models/planets.model");
 const { mongoConnect } = require("./services/mongo");
 const { loadLaunchData } = require("./models/launches.model");
+
 
 const PORT = process.env.PORT || 8000;
 
