@@ -9,20 +9,22 @@ const DEFAULT_FLIGHT_NUMBER = 100;
 //E come una mappatura di tutti i lanci (una dictionary)
 // la cosa bella è che tiene conto dell'ordine in cui vengono inseriti i dati
 
+//////////////////////// Serviva per il HARDCODING //////////////////////////////////////////////////
+// // definiamo prima i dati necessari di un lancio di cui tenere traccia
+// const launch = { //segnamo le corrispondenzae con la risposta dell'api SpaceX
+//     flightNumber: 100, //flight_number
+//     mission: "Mission Name", //name
+//     rocket: "RocketName", // rocket.name 
+//     launchDate: new Date('December 27, 2030'), //date_local
+//     target: "Kepler-442 b", // non ci sono corrispondenze
+//     customers: ['Nasa', 'SpaceX'], //payload.customers for each payload (e un altra collection relazionata al lancio )
+//     upcoming: true, //upcoming
+//     success: true // success
+// };
+// saveLaunch(launch);
 
-// definiamo prima i dati necessari di un lancio di cui tenere traccia
-const launch = { //segnamo le corrispondenzae con la risposta dell'api SpaceX
-    flightNumber: 100, //flight_number
-    mission: "Mission Name", //name
-    rocket: "RocketName", // rocket.name 
-    launchDate: new Date('December 27, 2030'), //date_local
-    target: "Kepler-442 b", // non ci sono corrispondenze
-    customers: ['Nasa', 'SpaceX'], //payload.customers for each payload (e un altra collection relazionata al lancio )
-    upcoming: true, //upcoming
-    success: true // success
-};
+//////////////////////// Serviva per il HARDCODING //////////////////////////////////////////////////
 
-saveLaunch(launch);
 
 // creo funzione per verificare l'esistenza di un lancio all'interno della collection launches
 // function existsLaunghWithId(launchId){
@@ -42,11 +44,14 @@ async function findLaunch(filter){
     return await launchesDatabase.findOne(filter);
 }
 
-async function getAllLaunches(){
-    return await launchesDatabase.find({},{
-        "_id": 0,
-        "__v": 0,
-    });
+async function getAllLaunches(skip, limit){ // con parametri di paginazione
+    return await launchesDatabase
+    .find({},{"_id": 0, "__v": 0,})
+    .sort({flightNumber: 1})// perche tutti i documenti siano nell ordine che decidiamo
+    .skip(skip) // il numero di record da saltare prima di iniziare a recuperare i successivi 50.
+    //con limite di 50 record per pagina, sulla prima pagina non devo saltare record, per restituire la seconda pagina devo saltarne 50,
+    // per la terza 100 e cosi via
+    .limit(limit);/*sempre funzione di mongoose*/
 }
 
 //prima faccio un sort decrescente poi ne estraggo un documento

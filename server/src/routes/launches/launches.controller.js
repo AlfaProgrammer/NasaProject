@@ -1,5 +1,7 @@
 const {getAllLaunches, scheduleNewLaunch, existsLaunchWithId, abortLaunchById} = require("../../models/launches.model");
 
+const { getPagination } = require('../../services/query')
+
 async function httpGetAllLaunches(req, res){
     //sfortunatamente la nostra MAP dei lanci non è compatibile con JSON, non possiamo trasformarla direttamente
     // quindi non possiamo fare semplicemente questa cosa 
@@ -7,7 +9,12 @@ async function httpGetAllLaunches(req, res){
     // siccome pero noi vogliamo solo i valori delle key dentro la collection MAP
     // dobbiamo accedere ai valori del Map launches "launches.values() " che ci restituisce un
     //oggetto iterabile che quindi possiamo trasformare in array compatibile con JSON
-    return res.status(200).json(await getAllLaunches());
+
+    const { skip, limit } =  getPagination(req.query); // query string del url = argomento di funzione
+    
+    const launches = await getAllLaunches(skip, limit);
+
+    return res.status(200).json(launches);
 }
 
 async function httpAddNewLaunch(req, res){
