@@ -14,9 +14,14 @@ jobs: #cio di cui un workflow è composto. Il JOB è triggerato dal push e pull 
     # che saranno disponibili a tutte le azioni definite negli steps
       CI: true #react ha una feature implementata che riconosche di essere in Continuous Integration e disabiliterà il watch mode per quando lanciamo il test
       # PORT: 9000 se volessimo, e tante altre cose 
+      # se settiamo qui la connection string del db, i test verranno eseguiti cercando di connettersi da questa stringa, non quella del codice del test JEST
+      MONGO_URL: modngodb://localhost/nasa # crea un mongo DB in localhost del sis operativo e lo chiama nasa
+      # il DB viene hostato da GitHub come CI server.
+      # il nome della variabile però deve essere uguale a quello usato dentro i test JEST
     strategy: # per definire più versioni di node per esempio che devono essere testate
       matrix: 
         node-version: [14.x, 16.x]
+        mongodb-version: ["4.4"] # impostiamo la versione specifica di MongoDB
     runs-on: ubuntu-latest #Piattaforma sulla quale verrà eseguito. QUindi il sistema operativo del nostro server ( anche windows-latest )
     steps: #azioni da fare sulla sistema operativo con il JOB viene triggerato da un evento
       - uses: actions/checkout@v2 #azione compresa della sua versione => sono script già implementati come questo dalla community
@@ -24,6 +29,10 @@ jobs: #cio di cui un workflow è composto. Il JOB è triggerato dal push e pull 
         uses: actions/setup-node@v2 #@2 è la versione dell'azione => vogliamo che node sia installato sul sistema operativo
         with: #aggiungere elementi
           node-version: ${{matrix.node-version}} #versione specifica di node (siccome pero ne sto testando due devo passarlo come variabile)
+      - name: Use MongoDB from GitHub Actions
+        uses: supercharge/mongodb-github-action@1.6.0 # azione che fa partire un MongoDB server specificatamente per questo JOB
+        with: 
+          mongodb-version: ${{ matrix.mongodb-version }}
       - run: npm install #per scrivere i nostri script personalizzati che verranno eseguiti nel terminale del sistema operativo
       - run: npm run build --prefix client
       - run: npm test #ATTENZIONE quando lanci il test in client di default react lo impost in watch mode. Dalla quale devi uscire se vui chiudere il test
