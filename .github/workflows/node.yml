@@ -1,0 +1,22 @@
+#assicuriamoci per esempio che ogni volta che facciamo un deploy il front end venga
+#buildato correttamente
+#quindi vogliamo lanciare il comando npm run build --prefix client
+name: NASA Project CI # nome del workflow
+on: #quando il nostro workflow deve essere eseguito. Definiamo i trigger per questo workflow in poche parole
+  push: #evento che triggera il workflow
+    branches: [ master ] # quando eseguiamo l'azione sopra sui branch in questo array
+  pull_request: #evento che triggera il workflow
+    branches: [ master ] # quando eseguiamo l'azione sopra sui branch in questo array
+jobs: #cio di cui un workflow è composto. Il JOB è triggerato dal push e pull (azioni indicate sopra)
+  build: #è il job stesso
+    runs-on: ubuntu-latest #Piattaforma sulla quale verrà eseguito. QUindi il sistema operativo del nostro server ( anche windows-latest )
+    steps: #azioni da fare sulla sistema operativo con il JOB viene triggerato da un evento
+      - uses: actions/checkout@v2 #azione compresa della sua versione => sono script già implementati come questo dalla community
+      - name: Use node.js version 16 #possiamo anche dare un nome all'azione 
+        uses: actions/setup-node@v2 #@2 è la versione dell'azione => vogliamo che node sia installato sul sistema operativo
+        with: #aggiungere elementi
+          node-version: "16" #versione specifica di node
+      - run: npm install #per scrivere i nostri script personalizzati che verranno eseguiti nel terminale del sistema operativo
+      - run: npm run build --prefix client
+  # deploy: # sarebbe un secondo job che vogliamo fargli fare
+    #needs: build #ha bisogno che build prima sia completato. Senza questa voce vengono eseguiti in contemporanea
