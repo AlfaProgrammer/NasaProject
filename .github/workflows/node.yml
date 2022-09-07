@@ -15,7 +15,7 @@ jobs: #cio di cui un workflow è composto. Il JOB è triggerato dal push e pull 
       CI: true #react ha una feature implementata che riconosche di essere in Continuous Integration e disabiliterà il watch mode per quando lanciamo il test
       # PORT: 9000 se volessimo, e tante altre cose 
       # se settiamo qui la connection string del db, i test verranno eseguiti cercando di connettersi da questa stringa, non quella del codice del test JEST
-      MONGO_URL: modngodb://localhost/nasa # crea un mongo DB in localhost del sis operativo e lo chiama nasa
+      MONGO_URL: mongodb://localhost/nasa # crea un mongo DB in localhost del sis operativo e lo chiama nasa
       # il DB viene hostato da GitHub come CI server.
       # il nome della variabile però deve essere uguale a quello usato dentro i test JEST
     strategy: # per definire più versioni di node per esempio che devono essere testate
