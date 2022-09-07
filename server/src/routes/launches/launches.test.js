@@ -6,7 +6,11 @@ const app = require("../../app"); //app express
 // non devi preoccuparti di importare il module perche JEST si occupa di trovarle da solo quando va a leggere il file
 // il test viene definito nella callback di describe
 // che chiama la funzione test che definisce tutti i casi del nostro test
-const { mongoConnect, mongoDisconnect } = require("../../services/mongo")
+const { mongoConnect, mongoDisconnect } = require("../../services/mongo");
+
+const { // QUESTO PER RIUSCIRE A FARE I CI/CD WOrkflow
+    loadPlanetsData,
+} = require('../../models/planets.model');  
 
 // ora creiamo un ambiente per il test con mongoDB
 describe("Launches API", () => {
@@ -14,6 +18,9 @@ describe("Launches API", () => {
     //quindi noi ci vogliamo collegare al DB
     beforeAll(async () => {
         await mongoConnect();
+        await loadPlanetsData(); // QUESTO PER RIUSCIRE A FARE I CI/CD WOrkflow
+        // ricorda che il workflow connette i dati ad un DB hostato da GIT creato e distrutto solo per il test
+        // motivo per cui quel db non disporrà della collection di pianeti per eseguire i test JEST
     });
 
     afterAll(async() => {
