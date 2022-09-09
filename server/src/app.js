@@ -6,8 +6,6 @@ const morgan = require("morgan");
 const api = require("./routes/api")
 
 const app = express();
-// utilizziamo subito questo middlewere per garantire un Parsing
-// dei dati che ci arrivano dal client
 // app.use(cors()); per permettere a tutti i siti
 app.use(cors({
     origin: "http://localhost:3000" // permetto al front end di fare richiest al mio backend

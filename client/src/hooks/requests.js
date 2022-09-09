@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8000/v1";
+const API_URL = "v1"; // il front end vive sullo stesso indirizzo del server quando online
 
 async function httpGetPlanets() {
   // dobbiamo ricordarci che sono su2 PORT differenti
